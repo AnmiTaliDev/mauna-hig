@@ -1,0 +1,288 @@
+---
+import HeaderToolbar from "../components/layout/HeaderToolbar.astro";
+import Sidebar from "../components/layout/Sidebar.astro";
+import StatusBar from "../components/layout/StatusBar.astro";
+import SettingsModal from "../components/layout/SettingsModal.astro";
+import "../styles/global.css";
+
+interface Props {
+    title: string;
+    description?: string;
+    currentPath?: string;
+}
+
+const {
+    title,
+    description = "Human Interface Guidelines для дизайн-системы Mauna",
+    currentPath,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{title} | Mauna HIG</title>
+        <meta name="description" content={description} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@400;500&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+        />
+        <script is:inline>
+            (() => {
+                const savedTheme = localStorage.getItem("mauna-theme");
+                if (savedTheme === "dark" || savedTheme === "light") {
+                    document.documentElement.setAttribute(
+                        "data-theme",
+                        savedTheme,
+                    );
+                } else if (
+                    window.matchMedia("(prefers-color-scheme: dark)").matches
+                ) {
+                    document.documentElement.setAttribute("data-theme", "dark");
+                }
+                const savedAccent = localStorage.getItem("mauna-accent");
+                if (savedAccent) {
+                    document.documentElement.style.setProperty(
+                        "--mauna-accent",
+                        savedAccent,
+                    );
+                }
+                const savedSidebarWidth = localStorage.getItem(
+                    "mauna-sidebar-width",
+                );
+                if (savedSidebarWidth) {
+                    document.documentElement.style.setProperty(
+                        "--mauna-sidebar-width",
+                        savedSidebarWidth,
+                    );
+                }
+            })();
+        </script>
+    </head>
+    <body>
+        <HeaderToolbar />
+        <div class="workspace-layout">
+            <Sidebar currentPath={currentPath} />
+            <div
+                class="sidebar-resizer"
+                id="sidebar-resizer"
+                title="Перетяните для изменения ширины панели (двойной клик для сброса)"
+                role="separator"
+                aria-orientation="vertical"
+                tabindex="0"
+            >
+            </div>
+            <main class="document-canvas">
+                <article class="document-column">
+                    <slot />
+                </article>
+            </main>
+        </div>
+        <StatusBar currentSection={title} />
+        <SettingsModal />
+
+        <script>
+            const resizer = document.getElementById("sidebar-resizer");
+
+            if (resizer) {
+                let isDragging = false;
+
+                const onMove = (e: MouseEvent) => {
+                    if (!isDragging) return;
+                    const newWidth = Math.max(140, Math.min(500, e.clientX));
+                    document.documentElement.style.setProperty(
+                        "--mauna-sidebar-width",
+                        `${newWidth}px`,
+                    );
+                };
+
+                const onTouchMove = (e: TouchEvent) => {
+                    if (!isDragging || !e.touches[0]) return;
+                    const newWidth = Math.max(
+                        140,
+                        Math.min(500, e.touches[0].clientX),
+                    );
+                    document.documentElement.style.setProperty(
+                        "--mauna-sidebar-width",
+                        `${newWidth}px`,
+                    );
+                };
+
+                const onEnd = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    document.body.classList.remove("is-resizing");
+
+                    const finalWidth =
+                        document.documentElement.style.getPropertyValue(
+                            "--mauna-sidebar-width",
+                        );
+                    if (finalWidth) {
+                        localStorage.setItem("mauna-sidebar-width", finalWidth);
+                    }
+
+                    document.removeEventListener("mousemove", onMove);
+                    document.removeEventListener("mouseup", onEnd);
+                    document.removeEventListener("touchmove", onTouchMove);
+                    document.removeEventListener("touchend", onEnd);
+                };
+
+                const startDrag = (e: MouseEvent | TouchEvent) => {
+                    isDragging = true;
+                    document.body.classList.add("is-resizing");
+
+                    document.addEventListener("mousemove", onMove);
+                    document.addEventListener("mouseup", onEnd);
+                    document.addEventListener("touchmove", onTouchMove, {
+                        passive: false,
+                    });
+                    document.addEventListener("touchend", onEnd);
+                };
+
+                resizer.addEventListener("mousedown", startDrag);
+                resizer.addEventListener("touchstart", startDrag, {
+                    passive: true,
+                });
+
+                resizer.addEventListener("dblclick", () => {
+                    document.documentElement.style.setProperty(
+                        "--mauna-sidebar-width",
+                        "200px",
+                    );
+                    localStorage.removeItem("mauna-sidebar-width");
+                });
+            }
+        </script>
+    </body>
+</html>
+
+<style>
+    .workspace-layout {
+        display: flex;
+        flex: 1;
+        min-height: calc(
+            100vh - var(--mauna-toolbar-height) - var(--mauna-statusbar-height)
+        );
+        position: relative;
+    }
+
+    .sidebar-resizer {
+        width: 10px;
+        margin-left: -5px;
+        margin-right: -5px;
+        z-index: 50;
+        cursor: col-resize;
+        user-select: none;
+        touch-action: none;
+        position: relative;
+        background: transparent;
+        flex-shrink: 0;
+    }
+
+    .sidebar-resizer::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 4px;
+        width: 2px;
+        background: transparent;
+        transition: background-color var(--mauna-motion-fast);
+    }
+
+    .sidebar-resizer:hover::after,
+    :global(body.is-resizing) .sidebar-resizer::after {
+        background-color: var(--mauna-accent);
+    }
+
+    @media (max-width: 860px) {
+        .sidebar-resizer {
+            display: none;
+        }
+    }
+
+    :global(body.is-resizing) {
+        cursor: col-resize !important;
+        user-select: none !important;
+        -webkit-user-select: none !important;
+    }
+
+    :global(body.is-resizing) * {
+        cursor: col-resize !important;
+        user-select: none !important;
+    }
+
+    .document-canvas {
+        flex: 1;
+        background-color: var(--mauna-bg-canvas);
+        padding: var(--mauna-space-2xl) var(--mauna-space-lg);
+        display: flex;
+        justify-content: center;
+        overflow-y: auto;
+    }
+
+    .document-column {
+        width: 100%;
+        max-width: var(--mauna-doc-width);
+        display: flex;
+        flex-direction: column;
+        gap: var(--mauna-space-md);
+        color: var(--mauna-text-primary);
+    }
+
+    .document-column :global(h1) {
+        font-size: var(--mauna-type-title-size);
+        line-height: var(--mauna-type-title-lh);
+        font-weight: 500;
+        margin: 0;
+        padding-bottom: var(--mauna-space-xs);
+        border-bottom: var(--mauna-border);
+    }
+
+    .document-column :global(h2) {
+        font-size: var(--mauna-type-heading-size);
+        line-height: var(--mauna-type-heading-lh);
+        font-weight: 500;
+        margin-top: var(--mauna-space-lg);
+        margin-bottom: 0;
+    }
+
+    .document-column :global(h3) {
+        font-size: 16px;
+        font-weight: 500;
+        margin-top: var(--mauna-space-md);
+        margin-bottom: 0;
+    }
+
+    .document-column :global(p) {
+        font-family: var(--mauna-font-doc);
+        font-size: var(--mauna-type-doc-size);
+        line-height: var(--mauna-type-doc-lh);
+        margin: 0;
+    }
+
+    .document-column :global(ul),
+    .document-column :global(ol) {
+        margin: 0;
+        padding-left: var(--mauna-space-xl);
+        display: flex;
+        flex-direction: column;
+        gap: var(--mauna-space-xs);
+    }
+
+    .document-column :global(li) {
+        font-family: var(--mauna-font-doc);
+        font-size: var(--mauna-type-doc-size);
+        line-height: var(--mauna-type-doc-lh);
+    }
+
+    .document-column :global(hr) {
+        border: none;
+        border-top: var(--mauna-border);
+        margin: var(--mauna-space-md) 0;
+    }
+</style>

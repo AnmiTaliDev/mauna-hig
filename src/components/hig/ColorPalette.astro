@@ -1,0 +1,179 @@
+---
+import ColorSwatch from "./ColorSwatch.astro";
+
+const lightTokens = [
+    {
+        token: "mauna.bg.canvas",
+        hexLight: "#F8FAFC",
+        hexDark: "#15181E",
+        role: "Фон страницы документа",
+    },
+    {
+        token: "mauna.bg.chrome",
+        hexLight: "#EEF2F6",
+        hexDark: "#1D2128",
+        role: "Панели, тулбары, боковая навигация",
+    },
+    {
+        token: "mauna.text.primary",
+        hexLight: "#111827",
+        hexDark: "#EAEBED",
+        role: "Основной текст",
+    },
+    {
+        token: "mauna.text.secondary",
+        hexLight: "#64748B",
+        hexDark: "#8B94A0",
+        role: "Метаданные, плейсхолдеры, второстепенные подписи",
+    },
+    {
+        token: "mauna.line",
+        hexLight: "#DCE3EB",
+        hexDark: "#2E3440",
+        role: "Разделители, границы панелей",
+    },
+    {
+        token: "mauna.accent",
+        hexLight: "#3B6FA8",
+        hexDark: "#5B8FC7",
+        role: "Курсор, выделение, акцентная кнопка",
+    },
+];
+
+const accents = [
+    { name: "Стальной синий (по умолчанию)", hex: "#3B6FA8" },
+    { name: "Графит", hex: "#5A5D66" },
+    { name: "Холодный тил", hex: "#2B8C7E" },
+    { name: "Индиго", hex: "#5B5FC7" },
+];
+---
+
+<div class="color-palette-container">
+    <div class="swatches-grid">
+        {
+            lightTokens.map((t) => (
+                <ColorSwatch
+                    token={t.token}
+                    hexLight={t.hexLight}
+                    hexDark={t.hexDark}
+                    role={t.role}
+                />
+            ))
+        }
+    </div>
+
+    <div class="accents-section">
+        <h4 class="accents-title">Проверенные варианты токена mauna.accent</h4>
+        <div class="accents-grid">
+            {
+                accents.map((acc) => (
+                    <button
+                        type="button"
+                        class="accent-option-btn"
+                        data-accent-hex={acc.hex}
+                        title={`Установить акцент: ${acc.name}`}
+                    >
+                        <span
+                            class="accent-color-circle"
+                            style={`background-color: ${acc.hex};`}
+                        />
+                        <span class="accent-info">
+                            <span class="accent-name">{acc.name}</span>
+                            <code class="accent-hex">{acc.hex}</code>
+                        </span>
+                    </button>
+                ))
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    const accentButtons = document.querySelectorAll(".accent-option-btn");
+    accentButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const hex = btn.getAttribute("data-accent-hex");
+            if (hex) {
+                document.documentElement.style.setProperty(
+                    "--mauna-accent",
+                    hex,
+                );
+                localStorage.setItem("mauna-accent", hex);
+            }
+        });
+    });
+</script>
+
+<style>
+    .color-palette-container {
+        margin: var(--mauna-space-lg) 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--mauna-space-xl);
+    }
+
+    .swatches-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--mauna-space-md);
+    }
+
+    .accents-section {
+        border: var(--mauna-border);
+        border-radius: var(--mauna-radius-lg);
+        background-color: var(--mauna-bg-chrome);
+        padding: var(--mauna-space-md);
+    }
+
+    .accents-title {
+        font-size: var(--mauna-type-ui-size);
+        font-weight: 500;
+        margin-bottom: var(--mauna-space-sm);
+        color: var(--mauna-text-primary);
+    }
+
+    .accents-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--mauna-space-sm);
+    }
+
+    .accent-option-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--mauna-space-sm);
+        padding: var(--mauna-space-sm);
+        border: var(--mauna-border);
+        border-radius: var(--mauna-radius-sm);
+        background-color: var(--mauna-bg-canvas);
+        text-align: left;
+        transition: border-color var(--mauna-motion-fast);
+    }
+
+    .accent-option-btn:hover {
+        border-color: var(--mauna-accent);
+    }
+
+    .accent-color-circle {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .accent-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .accent-name {
+        font-size: 13px;
+        color: var(--mauna-text-primary);
+    }
+
+    .accent-hex {
+        font-size: 11px;
+        color: var(--mauna-text-secondary);
+    }
+</style>

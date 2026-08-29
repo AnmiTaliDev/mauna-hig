@@ -1,0 +1,105 @@
+@import "./tokens.css";
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--mauna-font-ui);
+  font-size: 16px;
+  background-color: var(--mauna-bg-canvas);
+  color: var(--mauna-text-primary);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--mauna-bg-canvas);
+  color: var(--mauna-text-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--mauna-line);
+  transition: color var(--mauna-motion-fast), text-decoration-color var(--mauna-motion-fast);
+}
+
+a:hover {
+  color: var(--mauna-accent);
+  text-decoration-color: var(--mauna-accent);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: inherit;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: var(--mauna-space-lg) 0;
+  font-size: var(--mauna-type-ui-size);
+  line-height: var(--mauna-type-ui-lh);
+}
+
+th, td {
+  padding: var(--mauna-space-sm) var(--mauna-space-md);
+  border-bottom: var(--mauna-border);
+  text-align: left;
+}
+
+th {
+  color: var(--mauna-text-secondary);
+  font-weight: 500;
+  font-size: var(--mauna-type-caption-size);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+td code, p code, li code {
+  font-family: var(--mauna-font-doc);
+  font-size: 0.9em;
+  padding: 2px 5px;
+  background-color: var(--mauna-bg-chrome);
+  border: var(--mauna-border);
+  border-radius: var(--mauna-radius-sm);
+}
+
+pre {
+  background-color: var(--mauna-bg-chrome);
+  border: var(--mauna-border);
+  border-radius: var(--mauna-radius-lg);
+  padding: var(--mauna-space-md) var(--mauna-space-lg);
+  overflow-x: auto;
+  font-family: var(--mauna-font-doc);
+  font-size: 14px;
+  line-height: 1.5;
+  margin: var(--mauna-space-lg) 0;
+}
+
+pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+}
+
+::selection {
+  background-color: var(--mauna-accent);
+  color: #FBFAF7;
+}
+
+[data-theme="dark"] ::selection {
+  color: #1C1B19;
+}

@@ -1,0 +1,12 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocLayout from '../layouts/DocLayout.astro';
+
+const docs = await getCollection('docs');
+const aboutDoc = docs.find(d => (d.data.slug || d.id).includes('about')) || docs[0];
+const { Content } = await render(aboutDoc);
+---
+
+<DocLayout title="Что такое Mauna" description="Human Interface Guidelines для дизайн-системы Mauna" currentPath="about">
+  <Content />
+</DocLayout>

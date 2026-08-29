@@ -1,0 +1,57 @@
+---
+const cCode = `typedef struct {
+    MaunaColor bg_canvas;
+    MaunaColor bg_chrome;
+    MaunaColor text_primary;
+    MaunaColor text_secondary;
+    MaunaColor line;
+    MaunaColor accent;
+    MaunaFont  font_doc;
+    MaunaFont  font_ui;
+    float      line_height_doc;
+    float      line_height_ui;
+    int        radius_sm;
+    int        radius_lg;
+} MaunaTheme;`;
+---
+
+<div class="struct-container">
+  <div class="struct-header">
+    <span class="struct-title">mauna_theme.h</span>
+    <span class="struct-lang">C99</span>
+  </div>
+  <pre><code>{cCode}</code></pre>
+</div>
+
+<style>
+  .struct-container {
+    border: var(--mauna-border);
+    border-radius: var(--mauna-radius-lg);
+    background-color: var(--mauna-bg-chrome);
+    margin: var(--mauna-space-lg) 0;
+    overflow: hidden;
+  }
+
+  .struct-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--mauna-space-sm) var(--mauna-space-md);
+    border-bottom: var(--mauna-border);
+    font-size: var(--mauna-type-caption-size);
+    color: var(--mauna-text-secondary);
+  }
+
+  .struct-title {
+    font-family: var(--mauna-font-doc);
+    font-weight: 700;
+  }
+
+  pre {
+    margin: 0;
+    padding: var(--mauna-space-md);
+    background-color: transparent;
+    border: none;
+    border-radius: 0;
+  }
+</style>

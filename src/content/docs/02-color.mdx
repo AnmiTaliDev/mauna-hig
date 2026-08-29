@@ -1,0 +1,53 @@
+---
+title: "Цвет"
+description: "Цветовая палитра, токены светлой и тёмной темы, кастомизация акцента"
+order: 2
+slug: "color"
+---
+import ColorPalette from '../../components/hig/ColorPalette.astro';
+import ColorTokenTable from '../../components/hig/ColorTokenTable.astro';
+
+export const lightTokens = [
+  { token: 'mauna.bg.canvas', hex: '#F8FAFC', role: 'Фон страницы документа' },
+  { token: 'mauna.bg.chrome', hex: '#EEF2F6', role: 'Панели, тулбары, боковая навигация' },
+  { token: 'mauna.text.primary', hex: '#111827', role: 'Основной текст' },
+  { token: 'mauna.text.secondary', hex: '#64748B', role: 'Метаданные, плейсхолдеры, второстепенные подписи' },
+  { token: 'mauna.line', hex: '#DCE3EB', role: 'Разделители, границы панелей' },
+  { token: 'mauna.accent', hex: '#3B6FA8', role: 'Курсор, выделение, акцентная кнопка' },
+];
+
+export const darkTokens = [
+  { token: 'mauna.bg.canvas', hex: '#15181E', role: 'Фон страницы документа' },
+  { token: 'mauna.bg.chrome', hex: '#1D2128', role: 'Панели, тулбары, боковая навигация' },
+  { token: 'mauna.text.primary', hex: '#EAEBED', role: 'Основной текст' },
+  { token: 'mauna.text.secondary', hex: '#8B94A0', role: 'Метаданные, плейсхолдеры, второстепенные подписи' },
+  { token: 'mauna.line', hex: '#2E3440', role: 'Разделители, границы панелей' },
+  { token: 'mauna.accent', hex: '#5B8FC7', role: 'Курсор, выделение, акцентная кнопка. По умолчанию не меняется между темами' },
+];
+
+# Цвет
+
+Две базовые темы: светлая и тёмная. Холодный нейтральный фон, один акцентный цвет, минимальный контраст между соседними уровнями поверхности.
+
+<ColorPalette />
+
+## Светлая тема
+
+<ColorTokenTable tokens={lightTokens} />
+
+## Тёмная тема
+
+<ColorTokenTable tokens={darkTokens} />
+
+Контрасты тёмной темы пересчитаны отдельно от светлой. `mauna.text.secondary` использует близкие, но не идентичные значения между темами: холодный серый требует небольшой коррекции светлоты для сохранения контраста AA на каждом фоне отдельно.
+
+## Кастомизация акцента
+
+`mauna.accent` это токен. Значение по умолчанию: стальной синий. Пользователь может задать любой hex. Ниже перечислены альтернативы с проверенным контрастом AA на обеих базовых темах.
+
+| Название | Hex |
+|---|---|
+| Стальной синий (по умолчанию) | `#3B6FA8` |
+| Графит | `#5A5D66` |
+| Холодный тил | `#2B8C7E` |
+| Индиго | `#5B5FC7` |

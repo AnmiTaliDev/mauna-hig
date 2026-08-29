@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocLayout from '../layouts/DocLayout.astro';
+
+const docs = await getCollection('docs');
+const sortedDocs = docs.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+const renderedDocs = await Promise.all(
+  sortedDocs.map(async (doc) => {
+    const { Content } = await render(doc);
+    return { doc, Content };
+  })
+);
+---
+
+<DocLayout title="Полный текст Human Interface Guidelines" description="Единый непрерывный документ руководства по интерфейсам Mauna" currentPath="all">
+  <div class="all-docs-wrapper">
+    <div class="all-docs-header">
+      <h1 class="hig-main-title">Mauna. Human Interface Guidelines</h1>
+      <p class="hig-license-notice">Лицензия CC BY-SA 4.0</p>
+    </div>
+    <hr />
+    {renderedDocs.map(({ Content }, idx) => (
+      <section class="doc-section-block">
+        <Content />
+        {idx < renderedDocs.length - 1 && <hr />}
+      </section>
+    ))}
+  </div>
+</DocLayout>
+
+<style>
+  .all-docs-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mauna-space-md);
+  }
+
+  .all-docs-header {
+    margin-bottom: var(--mauna-space-sm);
+  }
+
+  .hig-main-title {
+    font-size: var(--mauna-type-title-size);
+    line-height: var(--mauna-type-title-lh);
+    font-weight: 500;
+  }
+
+  .hig-license-notice {
+    font-family: var(--mauna-font-doc);
+    font-size: var(--mauna-type-caption-size);
+    color: var(--mauna-text-secondary);
+    margin-top: var(--mauna-space-xs);
+  }
+
+  .doc-section-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mauna-space-md);
+  }
+</style>

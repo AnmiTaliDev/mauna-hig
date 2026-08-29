@@ -1,0 +1,93 @@
+---
+const scaleItems = [
+  { token: 'mauna.type.caption', size: '12px', lh: '1.3', role: 'статус-бар, метаданные', sample: 'Стр. 14 / 2 450 слов' },
+  { token: 'mauna.type.ui', size: '14px', lh: '1.3', role: 'тулбар, панели, диалоги', sample: 'Экспорт в PDF...' },
+  { token: 'mauna.type.doc', size: '16px', lh: '1.6', role: 'тело документа', sample: 'Текст документа набран Courier Prime.' },
+  { token: 'mauna.type.heading', size: '20px', lh: '1.3', role: 'заголовки диалогов, крупные метки', sample: 'Параметры страницы' },
+  { token: 'mauna.type.title', size: '28px', lh: '1.25', role: 'экран приветствия, пустые состояния', sample: 'Новый документ' },
+];
+---
+
+<div class="typescale-container">
+  {scaleItems.map(item => (
+    <div class="typescale-row">
+      <div class="typescale-meta">
+        <code class="typescale-token">{item.token}</code>
+        <div class="typescale-spec">
+          <span>{item.size}</span>
+          <span class="spec-divider">/</span>
+          <span>lh {item.lh}</span>
+        </div>
+        <div class="typescale-role">{item.role}</div>
+      </div>
+      <div
+        class="typescale-sample"
+        style={`font-size: ${item.size}; line-height: ${item.lh}; font-family: ${item.token === 'mauna.type.doc' ? 'var(--mauna-font-doc)' : 'var(--mauna-font-ui)'};`}
+      >
+        {item.sample}
+      </div>
+    </div>
+  ))}
+</div>
+
+<style>
+  .typescale-container {
+    display: flex;
+    flex-direction: column;
+    gap: var(--mauna-space-md);
+    margin: var(--mauna-space-lg) 0;
+  }
+
+  .typescale-row {
+    border: var(--mauna-border);
+    border-radius: var(--mauna-radius-lg);
+    background-color: var(--mauna-bg-chrome);
+    padding: var(--mauna-space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--mauna-space-sm);
+  }
+
+  @media (min-width: 640px) {
+    .typescale-row {
+      flex-direction: row;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+  }
+
+  .typescale-meta {
+    flex: 0 0 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .typescale-token {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .typescale-spec {
+    font-size: 12px;
+    color: var(--mauna-text-secondary);
+    font-family: var(--mauna-font-doc);
+  }
+
+  .spec-divider {
+    margin: 0 4px;
+    opacity: 0.5;
+  }
+
+  .typescale-role {
+    font-size: 12px;
+    color: var(--mauna-text-secondary);
+  }
+
+  .typescale-sample {
+    flex: 1;
+    color: var(--mauna-text-primary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

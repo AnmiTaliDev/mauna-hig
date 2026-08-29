@@ -1,0 +1,47 @@
+---
+interface Props {
+  currentSection?: string;
+}
+
+const { currentSection = 'Mauna HIG' } = Astro.props;
+---
+
+<footer class="mauna-statusbar">
+  <div class="statusbar-left">
+    <span class="status-token">Текст: CC BY-SA 4.0</span>
+    <span class="status-sep">|</span>
+    <span class="status-token">Код: GNU AGPL 3.0</span>
+  </div>
+  <div class="statusbar-right">
+    <span class="status-section">{currentSection}</span>
+  </div>
+</footer>
+
+<style>
+  .mauna-statusbar {
+    height: var(--mauna-statusbar-height);
+    background-color: var(--mauna-bg-chrome);
+    border-top: var(--mauna-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--mauna-space-md);
+    font-size: var(--mauna-type-caption-size);
+    line-height: var(--mauna-type-caption-lh);
+    color: var(--mauna-text-secondary);
+    font-family: var(--mauna-font-ui);
+    position: sticky;
+    bottom: 0;
+    z-index: 100;
+  }
+
+  .statusbar-left, .statusbar-right {
+    display: flex;
+    align-items: center;
+    gap: var(--mauna-space-xs);
+  }
+
+  .status-sep {
+    opacity: 0.4;
+  }
+</style>

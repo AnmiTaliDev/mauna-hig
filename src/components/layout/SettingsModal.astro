@@ -1,0 +1,597 @@
+---
+const accents = [
+    { name: "Стальной синий", hex: "#3B6FA8" },
+    { name: "Графит", hex: "#5A5D66" },
+    { name: "Холодный тил", hex: "#2B8C7E" },
+    { name: "Индиго", hex: "#5B5FC7" },
+];
+---
+
+<div class="settings-backdrop" id="settings-dialog" aria-hidden="true">
+    <div
+        class="settings-window"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settings-title"
+    >
+        <header class="settings-header">
+            <h2 id="settings-title" class="settings-heading">Настройки</h2>
+            <button
+                type="button"
+                class="settings-close-btn"
+                id="settings-close-btn"
+                aria-label="Закрыть"
+            >
+                <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </header>
+
+        <div class="settings-body">
+            <aside class="settings-nav">
+                <button
+                    type="button"
+                    class="settings-tab active"
+                    data-tab="appearance">Оформление</button
+                >
+                <button type="button" class="settings-tab" data-tab="about"
+                    >О системе</button
+                >
+            </aside>
+
+            <section class="settings-content">
+                <div class="tab-panel active" id="tab-appearance">
+                    <div class="settings-group">
+                        <label class="group-label">Тема интерфейса</label>
+                        <div class="theme-options">
+                            <button
+                                type="button"
+                                class="theme-option-btn"
+                                data-theme-val="light"
+                            >
+                                Светлая
+                            </button>
+                            <button
+                                type="button"
+                                class="theme-option-btn"
+                                data-theme-val="dark"
+                            >
+                                Тёмная
+                            </button>
+                            <button
+                                type="button"
+                                class="theme-option-btn"
+                                data-theme-val="system"
+                            >
+                                Системная
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="group-label"
+                            >Акцентный цвет (mauna.accent)</label
+                        >
+                        <div class="accent-options-grid">
+                            {
+                                accents.map((acc) => (
+                                    <button
+                                        type="button"
+                                        class="modal-accent-btn"
+                                        data-accent-hex={acc.hex}
+                                        title={`Выбрать: ${acc.name}`}
+                                    >
+                                        <span
+                                            class="modal-accent-circle"
+                                            style={`background-color: ${acc.hex};`}
+                                        />
+                                        <span class="modal-accent-text">
+                                            <span class="modal-accent-name">
+                                                {acc.name}
+                                            </span>
+                                            <code class="modal-accent-code">
+                                                {acc.hex}
+                                            </code>
+                                        </span>
+                                        <span
+                                            class="modal-accent-check"
+                                            aria-hidden="true"
+                                        >
+                                            <svg
+                                                width="14"
+                                                height="14"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            >
+                                                <polyline points="20 6 9 17 4 12" />
+                                            </svg>
+                                        </span>
+                                    </button>
+                                ))
+                            }
+                        </div>
+
+                        <div class="custom-hex-row">
+                            <label
+                                for="custom-accent-input"
+                                class="custom-hex-label"
+                                >Произвольный HEX:</label
+                            >
+                            <div class="custom-hex-input-group">
+                                <input
+                                    type="text"
+                                    id="custom-accent-input"
+                                    placeholder="#3B6FA8"
+                                    maxlength="7"
+                                    class="custom-hex-field"
+                                />
+                                <button
+                                    type="button"
+                                    id="apply-custom-accent-btn"
+                                    class="apply-accent-btn"
+                                >
+                                    Применить
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-panel" id="tab-about">
+                    <div class="settings-group">
+                        <label class="group-label">Дизайн-система</label>
+                        <p class="about-text">
+                            Mauna HIG: спецификация и токены интерфейса.
+                        </p>
+                        <p class="about-text">
+                            Лицензия текста: CC BY-SA 4.0.<br />
+                            Лицензия кода: GNU AGPL 3.0.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dialog = document.getElementById("settings-dialog");
+    const closeBtn = document.getElementById("settings-close-btn");
+
+    const modalAccentBtns = document.querySelectorAll(".modal-accent-btn");
+    const customHexInput = document.getElementById(
+        "custom-accent-input",
+    ) as HTMLInputElement | null;
+
+    const updateActiveAccentUI = (currentHex: string) => {
+        let matched = false;
+        modalAccentBtns.forEach((btn) => {
+            const btnHex = btn.getAttribute("data-accent-hex");
+            if (btnHex && btnHex.toLowerCase() === currentHex.toLowerCase()) {
+                btn.classList.add("active");
+                matched = true;
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+
+        if (customHexInput) {
+            customHexInput.value = currentHex;
+        }
+    };
+
+    const initialAccent = localStorage.getItem("mauna-accent") || "#3B6FA8";
+    updateActiveAccentUI(initialAccent);
+
+    const openSettings = () => {
+        if (!dialog) return;
+        dialog.classList.add("visible");
+        dialog.setAttribute("aria-hidden", "false");
+        const activeAccent = localStorage.getItem("mauna-accent") || "#3B6FA8";
+        updateActiveAccentUI(activeAccent);
+    };
+
+    const closeSettings = () => {
+        if (!dialog) return;
+        dialog.classList.remove("visible");
+        dialog.setAttribute("aria-hidden", "true");
+    };
+
+    window.addEventListener("mauna:open-settings", openSettings);
+
+    closeBtn?.addEventListener("click", closeSettings);
+
+    dialog?.addEventListener("click", (e) => {
+        if (e.target === dialog) {
+            closeSettings();
+        }
+    });
+
+    window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && dialog?.classList.contains("visible")) {
+            closeSettings();
+        }
+    });
+
+    const tabButtons = document.querySelectorAll(".settings-tab");
+    const tabPanels = document.querySelectorAll(".tab-panel");
+
+    tabButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const tabName = btn.getAttribute("data-tab");
+            tabButtons.forEach((b) => b.classList.remove("active"));
+            tabPanels.forEach((p) => p.classList.remove("active"));
+
+            btn.classList.add("active");
+            const targetPanel = document.getElementById(`tab-${tabName}`);
+            targetPanel?.classList.add("active");
+        });
+    });
+
+    const themeButtons = document.querySelectorAll(".theme-option-btn");
+
+    const updateActiveThemeBtn = (theme: string) => {
+        themeButtons.forEach((btn) => {
+            const val = btn.getAttribute("data-theme-val");
+            if (val === theme) {
+                btn.classList.add("active");
+            } else {
+                btn.classList.remove("active");
+            }
+        });
+    };
+
+    const currentTheme = localStorage.getItem("mauna-theme") || "system";
+    updateActiveThemeBtn(currentTheme);
+
+    themeButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const val = btn.getAttribute("data-theme-val");
+            if (!val) return;
+
+            if (val === "system") {
+                localStorage.removeItem("mauna-theme");
+                const sysDark = window.matchMedia(
+                    "(prefers-color-scheme: dark)",
+                ).matches;
+                document.documentElement.setAttribute(
+                    "data-theme",
+                    sysDark ? "dark" : "light",
+                );
+            } else {
+                document.documentElement.setAttribute("data-theme", val);
+                localStorage.setItem("mauna-theme", val);
+            }
+            updateActiveThemeBtn(val);
+        });
+    });
+
+    modalAccentBtns.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const hex = btn.getAttribute("data-accent-hex");
+            if (hex) {
+                document.documentElement.style.setProperty(
+                    "--mauna-accent",
+                    hex,
+                );
+                localStorage.setItem("mauna-accent", hex);
+                updateActiveAccentUI(hex);
+            }
+        });
+    });
+
+    const applyCustomBtn = document.getElementById("apply-custom-accent-btn");
+
+    applyCustomBtn?.addEventListener("click", () => {
+        const val = customHexInput?.value.trim();
+        if (val && /^#[0-9A-Fa-f]{6}$/.test(val)) {
+            document.documentElement.style.setProperty("--mauna-accent", val);
+            localStorage.setItem("mauna-accent", val);
+            updateActiveAccentUI(val);
+        }
+    });
+</script>
+
+<style>
+    .settings-backdrop {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--mauna-space-md);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--mauna-motion-base);
+    }
+
+    .settings-backdrop.visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .settings-window {
+        width: 100%;
+        max-width: 580px;
+        background-color: var(--mauna-bg-chrome);
+        border: var(--mauna-border);
+        border-radius: var(--mauna-radius-lg);
+        box-shadow: var(--mauna-shadow-popup);
+        overflow: hidden;
+        transform: scale(0.97);
+        transition: transform var(--mauna-motion-base);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .settings-backdrop.visible .settings-window {
+        transform: scale(1);
+    }
+
+    .settings-header {
+        height: var(--mauna-toolbar-height);
+        padding: 0 var(--mauna-space-md);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: var(--mauna-border);
+    }
+
+    .settings-heading {
+        font-size: var(--mauna-type-ui-size);
+        font-weight: 500;
+        margin: 0;
+        color: var(--mauna-text-primary);
+    }
+
+    .settings-close-btn {
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--mauna-radius-sm);
+        color: var(--mauna-text-secondary);
+        transition: color var(--mauna-motion-fast);
+    }
+
+    .settings-close-btn:hover {
+        color: var(--mauna-text-primary);
+    }
+
+    .settings-body {
+        display: flex;
+        min-height: 300px;
+    }
+
+    @media (max-width: 540px) {
+        .settings-body {
+            flex-direction: column;
+        }
+    }
+
+    .settings-nav {
+        width: 140px;
+        border-right: var(--mauna-border);
+        padding: var(--mauna-space-sm) 0;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 540px) {
+        .settings-nav {
+            width: 100%;
+            flex-direction: row;
+            border-right: none;
+            border-bottom: var(--mauna-border);
+            padding: var(--mauna-space-xs);
+        }
+    }
+
+    .settings-tab {
+        padding: 6px var(--mauna-space-md);
+        font-size: var(--mauna-type-ui-size);
+        text-align: left;
+        color: var(--mauna-text-secondary);
+        transition: color var(--mauna-motion-fast);
+    }
+
+    .settings-tab:hover {
+        color: var(--mauna-text-primary);
+    }
+
+    .settings-tab.active {
+        background-color: var(--mauna-bg-canvas);
+        color: var(--mauna-text-primary);
+        font-weight: 500;
+    }
+
+    .settings-content {
+        flex: 1;
+        padding: var(--mauna-space-md);
+        background-color: var(--mauna-bg-canvas);
+        overflow-y: auto;
+    }
+
+    .tab-panel {
+        display: none;
+        flex-direction: column;
+        gap: var(--mauna-space-lg);
+    }
+
+    .tab-panel.active {
+        display: flex;
+    }
+
+    .settings-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--mauna-space-xs);
+    }
+
+    .group-label {
+        font-size: var(--mauna-type-caption-size);
+        color: var(--mauna-text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 500;
+    }
+
+    .theme-options {
+        display: flex;
+        gap: var(--mauna-space-xs);
+    }
+
+    .theme-option-btn {
+        flex: 1;
+        padding: 6px 10px;
+        border: var(--mauna-border);
+        border-radius: var(--mauna-radius-sm);
+        background-color: var(--mauna-bg-chrome);
+        font-size: var(--mauna-type-ui-size);
+        color: var(--mauna-text-secondary);
+        transition:
+            border-color var(--mauna-motion-fast),
+            color var(--mauna-motion-fast);
+    }
+
+    .theme-option-btn:hover {
+        color: var(--mauna-text-primary);
+    }
+
+    .theme-option-btn.active {
+        background-color: var(--mauna-bg-canvas);
+        color: var(--mauna-text-primary);
+        border-color: var(--mauna-accent);
+        font-weight: 500;
+    }
+
+    .accent-options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: var(--mauna-space-xs);
+    }
+
+    .modal-accent-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--mauna-space-xs);
+        padding: 6px 8px;
+        border: var(--mauna-border);
+        border-radius: var(--mauna-radius-sm);
+        background-color: var(--mauna-bg-chrome);
+        text-align: left;
+        transition:
+            border-color var(--mauna-motion-fast),
+            background-color var(--mauna-motion-fast);
+        position: relative;
+    }
+
+    .modal-accent-btn:hover {
+        border-color: var(--mauna-text-secondary);
+    }
+
+    .modal-accent-btn.active {
+        border-color: var(--mauna-accent);
+        background-color: var(--mauna-bg-canvas);
+        box-shadow: 0 0 0 1px var(--mauna-accent);
+    }
+
+    .modal-accent-circle {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    .modal-accent-text {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+        flex: 1;
+    }
+
+    .modal-accent-name {
+        font-size: 12px;
+        color: var(--mauna-text-primary);
+    }
+
+    .modal-accent-code {
+        font-size: 10px;
+        color: var(--mauna-text-secondary);
+        font-family: var(--mauna-font-doc);
+    }
+
+    .modal-accent-check {
+        display: none;
+        color: var(--mauna-accent);
+        flex-shrink: 0;
+    }
+
+    .modal-accent-btn.active .modal-accent-check {
+        display: inline-flex;
+    }
+
+    .custom-hex-row {
+        margin-top: var(--mauna-space-xs);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .custom-hex-label {
+        font-size: 12px;
+        color: var(--mauna-text-secondary);
+    }
+
+    .custom-hex-input-group {
+        display: flex;
+        gap: var(--mauna-space-xs);
+    }
+
+    .custom-hex-field {
+        flex: 1;
+        background-color: var(--mauna-bg-chrome);
+        border: var(--mauna-border);
+        border-radius: var(--mauna-radius-sm);
+        padding: 4px 8px;
+        font-family: var(--mauna-font-doc);
+        font-size: 13px;
+        color: var(--mauna-text-primary);
+        outline: none;
+    }
+
+    .custom-hex-field:focus {
+        border-color: var(--mauna-accent);
+    }
+
+    .apply-accent-btn {
+        padding: 4px 10px;
+        background-color: var(--mauna-accent);
+        color: #fbfaf7;
+        border-radius: var(--mauna-radius-sm);
+        font-size: 12px;
+    }
+
+    .about-text {
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--mauna-text-primary);
+        margin-bottom: var(--mauna-space-xs);
+    }
+</style>

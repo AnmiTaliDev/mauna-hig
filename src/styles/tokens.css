@@ -1,0 +1,57 @@
+:root {
+  --mauna-bg-canvas: #F8FAFC;
+  --mauna-bg-chrome: #EEF2F6;
+  --mauna-text-primary: #111827;
+  --mauna-text-secondary: #64748B;
+  --mauna-line: #DCE3EB;
+  --mauna-accent: #3B6FA8;
+
+  --mauna-font-doc: "Courier Prime", "Courier New", Courier, monospace;
+  --mauna-font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --mauna-font-mono: "JetBrains Mono", "Courier Prime", monospace;
+
+  --mauna-type-caption-size: 12px;
+  --mauna-type-caption-lh: 1.3;
+  --mauna-type-ui-size: 14px;
+  --mauna-type-ui-lh: 1.3;
+  --mauna-type-doc-size: 16px;
+  --mauna-type-doc-lh: 1.6;
+  --mauna-type-heading-size: 20px;
+  --mauna-type-heading-lh: 1.3;
+  --mauna-type-title-size: 28px;
+  --mauna-type-title-lh: 1.25;
+
+  --mauna-space-xs: 4px;
+  --mauna-space-sm: 8px;
+  --mauna-space-md: 12px;
+  --mauna-space-lg: 16px;
+  --mauna-space-xl: 24px;
+  --mauna-space-2xl: 32px;
+  --mauna-space-3xl: 48px;
+
+  --mauna-radius-sm: 4px;
+  --mauna-radius-lg: 8px;
+
+  --mauna-motion-fast: 120ms ease-out;
+  --mauna-motion-base: 200ms ease-in-out;
+  --mauna-motion-slow: 320ms ease-in-out;
+
+  --mauna-border-width: 0.5px;
+  --mauna-border: var(--mauna-border-width) solid var(--mauna-line);
+  --mauna-shadow-popup: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  --mauna-doc-width: 620px;
+  --mauna-toolbar-height: 40px;
+  --mauna-statusbar-height: 28px;
+  --mauna-sidebar-width: 200px;
+}
+
+[data-theme="dark"] {
+  --mauna-bg-canvas: #15181E;
+  --mauna-bg-chrome: #1D2128;
+  --mauna-text-primary: #EAEBED;
+  --mauna-text-secondary: #8B94A0;
+  --mauna-line: #2E3440;
+  --mauna-accent: #5B8FC7;
+  --mauna-shadow-popup: 0 2px 8px rgba(0, 0, 0, 0.04);
+}

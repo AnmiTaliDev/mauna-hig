@@ -1,0 +1,86 @@
+---
+interface TokenItem {
+  token: string;
+  hex: string;
+  role: string;
+}
+
+interface Props {
+  tokens: TokenItem[];
+}
+
+const { tokens } = Astro.props;
+---
+
+<div class="color-token-table-wrap">
+  <table class="color-token-table">
+    <thead>
+      <tr>
+        <th>Токен</th>
+        <th>Значение</th>
+        <th>Назначение</th>
+      </tr>
+    </thead>
+    <tbody>
+      {tokens.map(t => (
+        <tr>
+          <td><code>{t.token}</code></td>
+          <td>
+            <div class="color-val-cell">
+              <span
+                class="color-sample-box"
+                style={`background-color: ${t.hex};`}
+                aria-hidden="true"
+              ></span>
+              <code>{t.hex}</code>
+            </div>
+          </td>
+          <td>{t.role}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .color-token-table-wrap {
+    margin: var(--mauna-space-md) 0;
+    overflow-x: auto;
+  }
+
+  .color-token-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--mauna-type-ui-size);
+  }
+
+  .color-token-table th,
+  .color-token-table td {
+    padding: var(--mauna-space-sm) var(--mauna-space-md);
+    border-bottom: var(--mauna-border);
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .color-token-table th {
+    font-size: var(--mauna-type-caption-size);
+    font-weight: 500;
+    color: var(--mauna-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .color-val-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--mauna-space-sm);
+  }
+
+  .color-sample-box {
+    width: 16px;
+    height: 16px;
+    border-radius: var(--mauna-radius-sm);
+    border: var(--mauna-border);
+    flex-shrink: 0;
+  }
+</style>

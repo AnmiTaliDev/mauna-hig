@@ -1,0 +1,19 @@
+{
+  "name": "mauna-hig",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/markdown-satteri": "^0.3.8",
+    "@astrojs/mdx": "^7.0.8",
+    "astro": "^7.2.9",
+    "satteri": "^0.10.5",
+    "typescript": "^7.0.2"
+  }
+}

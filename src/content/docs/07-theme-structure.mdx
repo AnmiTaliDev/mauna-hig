@@ -1,0 +1,34 @@
+---
+title: "Тема как открытая структура"
+description: "C-структура MaunaTheme, сериализация TOML/JSON и валидация контраста"
+order: 7
+slug: "theme-structure"
+---
+import StructViewer from '../../components/hig/StructViewer.astro';
+
+# Тема как открытая структура
+
+Токены переопределяются через конфигурационный файл. Структура хранится и читается из TOML или JSON при инициализации темы.
+
+<StructViewer />
+
+```c
+typedef struct {
+    MaunaColor bg_canvas;
+    MaunaColor bg_chrome;
+    MaunaColor text_primary;
+    MaunaColor text_secondary;
+    MaunaColor line;
+    MaunaColor accent;
+    MaunaFont  font_doc;
+    MaunaFont  font_ui;
+    float      line_height_doc;
+    float      line_height_ui;
+    int        radius_sm;
+    int        radius_lg;
+} MaunaTheme;
+```
+
+Движок обращается только к структуре `MaunaTheme`, без привязки к конкретным пресетам. Пресеты Paper, Ink, Sepia, Midnight: заполненные экземпляры структуры.
+
+Ограничение при валидации конфига: контраст текста к фону не ниже WCAG AA, 4.5 к 1 для обычного текста.
