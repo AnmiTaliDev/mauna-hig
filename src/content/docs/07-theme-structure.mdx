@@ -20,6 +20,7 @@ typedef struct {
     MaunaColor text_secondary;
     MaunaColor line;
     MaunaColor accent;
+    MaunaColor text_on_accent;
     MaunaFont  font_doc;
     MaunaFont  font_ui;
     float      line_height_doc;
@@ -29,6 +30,19 @@ typedef struct {
 } MaunaTheme;
 ```
 
-Движок обращается только к структуре `MaunaTheme`, без привязки к конкретным пресетам. Пресеты Paper, Ink, Sepia, Midnight: заполненные экземпляры структуры.
+Движок обращается только к структуре `MaunaTheme`, без привязки к конкретным пресетам. Пресеты Paper, Ink, Sepia, Midnight: заполненные экземпляры структуры. Paper и Ink совпадают со светлой и тёмной темой из раздела «Цвет».
 
-Ограничение при валидации конфига: контраст текста к фону не ниже WCAG AA, 4.5 к 1 для обычного текста.
+| Поле | Paper | Sepia | Ink | Midnight |
+|---|---|---|---|---|
+| `bg_canvas` | `#F8FAFC` | `#F4EEE1` | `#15181E` | `#0E1117` |
+| `bg_chrome` | `#EEF2F6` | `#EAE2D1` | `#1D2128` | `#151A23` |
+| `text_primary` | `#111827` | `#2B2620` | `#EAEBED` | `#DDE3EC` |
+| `text_secondary` | `#5F6E84` | `#6D6254` | `#8B94A0` | `#7F8A9A` |
+| `line` | `#DCE3EB` | `#DCD2BE` | `#2E3440` | `#252C38` |
+| `accent` | `#36669B` | `#36669B` | `#5B8FC7` | `#5B8FC7` |
+| `text_on_accent` | `#FBFAF7` | `#FBFAF7` | `#1C1B19` | `#1C1B19` |
+| Тень попапа, альфа | 0.08 | 0.08 | 0.04 | 0.04 |
+
+Sepia и Midnight используют акценты светлых и тёмных тем соответственно.
+
+Ограничение при валидации конфига: контраст текста к фону не ниже WCAG AA, 4.5 к 1 для обычного текста. Проверяются пары: `text_primary` и `text_secondary` к `bg_canvas` и `bg_chrome`, `text_on_accent` к `accent`.
