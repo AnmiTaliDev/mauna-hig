@@ -97,9 +97,5 @@ pre code {
 
 ::selection {
   background-color: var(--mauna-accent);
-  color: #FBFAF7;
-}
-
-[data-theme="dark"] ::selection {
-  color: #1C1B19;
+  color: var(--mauna-text-on-accent);
 }

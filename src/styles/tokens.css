@@ -2,9 +2,12 @@
   --mauna-bg-canvas: #F8FAFC;
   --mauna-bg-chrome: #EEF2F6;
   --mauna-text-primary: #111827;
-  --mauna-text-secondary: #64748B;
+  --mauna-text-secondary: #5F6E84;
   --mauna-line: #DCE3EB;
-  --mauna-accent: #3B6FA8;
+  --mauna-accent-light: #36669B;
+  --mauna-accent-dark: #5B8FC7;
+  --mauna-accent: var(--mauna-accent-light);
+  --mauna-text-on-accent: #FBFAF7;
 
   --mauna-font-doc: "Courier Prime", "Courier New", Courier, monospace;
   --mauna-font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -52,6 +55,7 @@
   --mauna-text-primary: #EAEBED;
   --mauna-text-secondary: #8B94A0;
   --mauna-line: #2E3440;
-  --mauna-accent: #5B8FC7;
+  --mauna-accent: var(--mauna-accent-dark);
+  --mauna-text-on-accent: #1C1B19;
   --mauna-shadow-popup: 0 2px 8px rgba(0, 0, 0, 0.04);
 }

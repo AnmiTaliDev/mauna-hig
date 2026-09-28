@@ -1,9 +1,9 @@
 ---
 const accents = [
-    { name: "Стальной синий", hex: "#3B6FA8" },
-    { name: "Графит", hex: "#5A5D66" },
-    { name: "Холодный тил", hex: "#2B8C7E" },
-    { name: "Индиго", hex: "#5B5FC7" },
+    { name: "Стальной синий", light: "#36669B", dark: "#5B8FC7" },
+    { name: "Графит", light: "#5A5D66", dark: "#858994" },
+    { name: "Холодный тил", light: "#226F64", dark: "#2F9A8A" },
+    { name: "Индиго", light: "#5156C4", dark: "#7F82D3" },
 ];
 ---
 
@@ -87,19 +87,20 @@ const accents = [
                                     <button
                                         type="button"
                                         class="modal-accent-btn"
-                                        data-accent-hex={acc.hex}
+                                        data-accent-light={acc.light}
+                                        data-accent-dark={acc.dark}
                                         title={`Выбрать: ${acc.name}`}
                                     >
                                         <span
                                             class="modal-accent-circle"
-                                            style={`background-color: ${acc.hex};`}
+                                            style={`--swatch-light: ${acc.light}; --swatch-dark: ${acc.dark};`}
                                         />
                                         <span class="modal-accent-text">
                                             <span class="modal-accent-name">
                                                 {acc.name}
                                             </span>
                                             <code class="modal-accent-code">
-                                                {acc.hex}
+                                                {acc.light} / {acc.dark}
                                             </code>
                                         </span>
                                         <span
@@ -132,7 +133,7 @@ const accents = [
                                 <input
                                     type="text"
                                     id="custom-accent-input"
-                                    placeholder="#3B6FA8"
+                                    placeholder="#36669B"
                                     maxlength="7"
                                     class="custom-hex-field"
                                 />
@@ -174,32 +175,49 @@ const accents = [
         "custom-accent-input",
     ) as HTMLInputElement | null;
 
-    const updateActiveAccentUI = (currentHex: string) => {
-        let matched = false;
+    const defaultAccent = { light: "#36669B", dark: "#5B8FC7" };
+
+    const readAccent = (): { light: string; dark: string } => {
+        const saved = localStorage.getItem("mauna-accent-pair");
+        return saved ? JSON.parse(saved) : defaultAccent;
+    };
+
+    const updateActiveAccentUI = (currentLight: string) => {
         modalAccentBtns.forEach((btn) => {
-            const btnHex = btn.getAttribute("data-accent-hex");
-            if (btnHex && btnHex.toLowerCase() === currentHex.toLowerCase()) {
+            const btnLight = btn.getAttribute("data-accent-light");
+            if (
+                btnLight &&
+                btnLight.toLowerCase() === currentLight.toLowerCase()
+            ) {
                 btn.classList.add("active");
-                matched = true;
             } else {
                 btn.classList.remove("active");
             }
         });
 
         if (customHexInput) {
-            customHexInput.value = currentHex;
+            customHexInput.value = currentLight;
         }
     };
 
-    const initialAccent = localStorage.getItem("mauna-accent") || "#3B6FA8";
-    updateActiveAccentUI(initialAccent);
+    const applyAccent = (light: string, dark: string) => {
+        const rootStyle = document.documentElement.style;
+        rootStyle.setProperty("--mauna-accent-light", light);
+        rootStyle.setProperty("--mauna-accent-dark", dark);
+        localStorage.setItem(
+            "mauna-accent-pair",
+            JSON.stringify({ light, dark }),
+        );
+        updateActiveAccentUI(light);
+    };
+
+    updateActiveAccentUI(readAccent().light);
 
     const openSettings = () => {
         if (!dialog) return;
         dialog.classList.add("visible");
         dialog.setAttribute("aria-hidden", "false");
-        const activeAccent = localStorage.getItem("mauna-accent") || "#3B6FA8";
-        updateActiveAccentUI(activeAccent);
+        updateActiveAccentUI(readAccent().light);
     };
 
     const closeSettings = () => {
@@ -279,14 +297,10 @@ const accents = [
 
     modalAccentBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
-            const hex = btn.getAttribute("data-accent-hex");
-            if (hex) {
-                document.documentElement.style.setProperty(
-                    "--mauna-accent",
-                    hex,
-                );
-                localStorage.setItem("mauna-accent", hex);
-                updateActiveAccentUI(hex);
+            const light = btn.getAttribute("data-accent-light");
+            const dark = btn.getAttribute("data-accent-dark");
+            if (light && dark) {
+                applyAccent(light, dark);
             }
         });
     });
@@ -296,9 +310,7 @@ const accents = [
     applyCustomBtn?.addEventListener("click", () => {
         const val = customHexInput?.value.trim();
         if (val && /^#[0-9A-Fa-f]{6}$/.test(val)) {
-            document.documentElement.style.setProperty("--mauna-accent", val);
-            localStorage.setItem("mauna-accent", val);
-            updateActiveAccentUI(val);
+            applyAccent(val, val);
         }
     });
 </script>
@@ -517,6 +529,11 @@ const accents = [
         height: 16px;
         border-radius: 50%;
         flex-shrink: 0;
+        background-color: var(--swatch-light);
+    }
+
+    :global([data-theme="dark"]) .modal-accent-circle {
+        background-color: var(--swatch-dark);
     }
 
     .modal-accent-text {
@@ -583,7 +600,7 @@ const accents = [
     .apply-accent-btn {
         padding: 4px 10px;
         background-color: var(--mauna-accent);
-        color: #fbfaf7;
+        color: var(--mauna-text-on-accent);
         border-radius: var(--mauna-radius-sm);
         font-size: 12px;
     }

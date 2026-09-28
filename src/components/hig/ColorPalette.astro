@@ -22,7 +22,7 @@ const lightTokens = [
     },
     {
         token: "mauna.text.secondary",
-        hexLight: "#64748B",
+        hexLight: "#5F6E84",
         hexDark: "#8B94A0",
         role: "Метаданные, плейсхолдеры, второстепенные подписи",
     },
@@ -34,17 +34,23 @@ const lightTokens = [
     },
     {
         token: "mauna.accent",
-        hexLight: "#3B6FA8",
+        hexLight: "#36669B",
         hexDark: "#5B8FC7",
         role: "Курсор, выделение, акцентная кнопка",
+    },
+    {
+        token: "mauna.text.on-accent",
+        hexLight: "#FBFAF7",
+        hexDark: "#1C1B19",
+        role: "Текст на акцентной заливке и в выделении",
     },
 ];
 
 const accents = [
-    { name: "Стальной синий (по умолчанию)", hex: "#3B6FA8" },
-    { name: "Графит", hex: "#5A5D66" },
-    { name: "Холодный тил", hex: "#2B8C7E" },
-    { name: "Индиго", hex: "#5B5FC7" },
+    { name: "Стальной синий (по умолчанию)", light: "#36669B", dark: "#5B8FC7" },
+    { name: "Графит", light: "#5A5D66", dark: "#858994" },
+    { name: "Холодный тил", light: "#226F64", dark: "#2F9A8A" },
+    { name: "Индиго", light: "#5156C4", dark: "#7F82D3" },
 ];
 ---
 
@@ -70,16 +76,23 @@ const accents = [
                     <button
                         type="button"
                         class="accent-option-btn"
-                        data-accent-hex={acc.hex}
+                        data-accent-light={acc.light}
+                        data-accent-dark={acc.dark}
                         title={`Установить акцент: ${acc.name}`}
                     >
                         <span
                             class="accent-color-circle"
-                            style={`background-color: ${acc.hex};`}
+                            style={`background-color: ${acc.light};`}
+                        />
+                        <span
+                            class="accent-color-circle"
+                            style={`background-color: ${acc.dark};`}
                         />
                         <span class="accent-info">
                             <span class="accent-name">{acc.name}</span>
-                            <code class="accent-hex">{acc.hex}</code>
+                            <code class="accent-hex">
+                                {acc.light} / {acc.dark}
+                            </code>
                         </span>
                     </button>
                 ))
@@ -92,13 +105,16 @@ const accents = [
     const accentButtons = document.querySelectorAll(".accent-option-btn");
     accentButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
-            const hex = btn.getAttribute("data-accent-hex");
-            if (hex) {
-                document.documentElement.style.setProperty(
-                    "--mauna-accent",
-                    hex,
+            const light = btn.getAttribute("data-accent-light");
+            const dark = btn.getAttribute("data-accent-dark");
+            if (light && dark) {
+                const rootStyle = document.documentElement.style;
+                rootStyle.setProperty("--mauna-accent-light", light);
+                rootStyle.setProperty("--mauna-accent-dark", dark);
+                localStorage.setItem(
+                    "mauna-accent-pair",
+                    JSON.stringify({ light, dark }),
                 );
-                localStorage.setItem("mauna-accent", hex);
             }
         });
     });

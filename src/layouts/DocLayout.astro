@@ -44,11 +44,16 @@ const {
                 ) {
                     document.documentElement.setAttribute("data-theme", "dark");
                 }
-                const savedAccent = localStorage.getItem("mauna-accent");
+                const savedAccent = localStorage.getItem("mauna-accent-pair");
                 if (savedAccent) {
+                    const accent = JSON.parse(savedAccent);
                     document.documentElement.style.setProperty(
-                        "--mauna-accent",
-                        savedAccent,
+                        "--mauna-accent-light",
+                        accent.light,
+                    );
+                    document.documentElement.style.setProperty(
+                        "--mauna-accent-dark",
+                        accent.dark,
                     );
                 }
                 const savedSidebarWidth = localStorage.getItem(
